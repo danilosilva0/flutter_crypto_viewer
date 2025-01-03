@@ -15,13 +15,41 @@ class _CoinsPageState extends State<CoinsPage> {
     NumberFormat real = NumberFormat.currency(locale: 'pt_BR', name: 'R\$');
     List<Coin> selectedList = [];
 
+    dynamicAppBar(){
+        if (selectedList.isEmpty){
+            return AppBar(
+                title: Text('Cryptocurrencies'),
+                centerTitle: true,
+                backgroundColor: Colors.indigoAccent
+            );
+        } else{
+            return AppBar(
+                leading: IconButton(
+                    onPressed: (){
+                        setState(() {
+                                selectedList.clear();
+                            });
+                    },
+                    icon: Icon(Icons.clear)
+                ),
+                title: Text(
+                    '${selectedList.length} selected',
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold
+                    )
+                ),
+                centerTitle: true,
+                backgroundColor: Colors.indigo[300],
+                elevation: 2,
+                iconTheme: IconThemeData(color: Colors.black87)
+            );
+        }
+    }
+
     @override
     Widget build(BuildContext context) {
         return Scaffold(
-            appBar: AppBar(
-                title: Text('Cryptocurrencies'),
-                backgroundColor: Colors.indigoAccent
-            ),
+            appBar: dynamicAppBar(),
             body: ListView.separated(
                 itemBuilder: (BuildContext context, int coinIndex) {
                     return ListTile(
@@ -50,6 +78,32 @@ class _CoinsPageState extends State<CoinsPage> {
                 },
                 padding: EdgeInsets.all(16),
                 separatorBuilder: (_, __) => Divider(),
-                itemCount: table.length));
+                itemCount: table.length
+            ),
+            floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+            floatingActionButton:
+                selectedList.isNotEmpty ?
+                    FloatingActionButton.extended(
+                        onPressed: (){},
+                        backgroundColor: Colors.indigoAccent,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(100))
+                        ),
+                        icon: Icon(
+                            Icons.star,
+                            color: Colors.white,
+                        ),
+                        label: Text(
+                            'Add to Favorites',
+                            style: TextStyle(
+                                letterSpacing: 0,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white
+                            ),
+                        )
+                    )
+                //"add to favorites" FloatingActionButton will not be shown if there are no selected coins
+                    : null
+        );
     }
 }
