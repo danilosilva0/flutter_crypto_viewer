@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_crypto_viewer/models/coin.dart';
+import 'package:flutter_crypto_viewer/pages/coins_details_page.dart';
 import 'package:flutter_crypto_viewer/repositories/coin_repository.dart';
 import 'package:intl/intl.dart';
 
@@ -46,6 +47,15 @@ class _CoinsPageState extends State<CoinsPage> {
         }
     }
 
+    showDetails(Coin coin){
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (_) => CoinsDetailsPage(coin: coin),
+            ),
+        );
+    }
+
     @override
     Widget build(BuildContext context) {
         return Scaffold(
@@ -73,7 +83,8 @@ class _CoinsPageState extends State<CoinsPage> {
                                         ? selectedList.remove(table[coinIndex])
                                         : selectedList.add(table[coinIndex]));
                                 });
-                        }
+                        },
+                        onTap: () => showDetails(table[coinIndex])
                     );
                 },
                 padding: EdgeInsets.all(16),
@@ -82,28 +93,29 @@ class _CoinsPageState extends State<CoinsPage> {
             ),
             floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
             floatingActionButton:
-                selectedList.isNotEmpty ?
-                    FloatingActionButton.extended(
-                        onPressed: (){},
-                        backgroundColor: Colors.indigoAccent,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(100))
-                        ),
-                        icon: Icon(
-                            Icons.star,
-                            color: Colors.white,
-                        ),
-                        label: Text(
-                            'Add to Favorites',
-                            style: TextStyle(
-                                letterSpacing: 0,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white
-                            ),
+            selectedList.isNotEmpty ?
+                FloatingActionButton.extended(
+                    onPressed: (){
+                    },
+                    backgroundColor: Colors.indigoAccent,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(100))
+                    ),
+                    icon: Icon(
+                        Icons.star,
+                        color: Colors.white
+                    ),
+                    label: Text(
+                        'Add to Favorites',
+                        style: TextStyle(
+                            letterSpacing: 0,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white
                         )
                     )
+                )
                 //"add to favorites" FloatingActionButton will not be shown if there are no selected coins
-                    : null
+                : null
         );
     }
 }
