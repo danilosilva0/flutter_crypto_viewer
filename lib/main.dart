@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_crypto_viewer/pages/coins_page.dart';
+import 'package:flutter_crypto_viewer/pages/home_page.dart';
 
 void main() {
   runApp(MyApp());
@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.indigo,
       ),
-      home: CoinsPage(),
+      home: HomePage(),
     );
   }
 }
