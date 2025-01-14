@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_crypto_viewer/models/coin.dart';
 import 'package:flutter_crypto_viewer/pages/coins_details_page.dart';
 import 'package:flutter_crypto_viewer/repositories/coin_repository.dart';
+import 'package:flutter_crypto_viewer/repositories/favorites_repository.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class CoinsPage extends StatefulWidget {
     const CoinsPage({super.key});
@@ -15,6 +17,7 @@ class _CoinsPageState extends State<CoinsPage> {
     final table = CoinRepository.table;
     NumberFormat real = NumberFormat.currency(locale: 'pt_BR', name: 'R\$');
     List<Coin> selectedList = [];
+    late FavoritesRepository favorites;
 
     dynamicAppBar(){
         if (selectedList.isEmpty){
@@ -58,6 +61,8 @@ class _CoinsPageState extends State<CoinsPage> {
 
     @override
     Widget build(BuildContext context) {
+        favorites = Provider.of<FavoritesRepository>(context);
+
         return Scaffold(
             appBar: dynamicAppBar(),
             body: ListView.separated(
@@ -68,9 +73,15 @@ class _CoinsPageState extends State<CoinsPage> {
                         ),
                         leading: (selectedList.contains(table[coinIndex])) ? CircleAvatar(child: Icon(Icons.check))
                             : SizedBox(width: 40, child: Image.asset(table[coinIndex].icon)),
-                        title: Text(
-                            table[coinIndex].name,
-                            style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500)
+                        title: Row(
+                          children: [
+                            Text(
+                                table[coinIndex].name,
+                                style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500)
+                            ),
+                              if(favorites.list.contains(table[coinIndex]))
+                                  Icon(Icons.circle, color: Colors.amber, size: 8,),
+                          ],
                         ),
                         trailing: Text(real.format(table[coinIndex].price)),
                         selected: selectedList.contains(table[coinIndex]),
@@ -96,6 +107,8 @@ class _CoinsPageState extends State<CoinsPage> {
             selectedList.isNotEmpty ?
                 FloatingActionButton.extended(
                     onPressed: (){
+                        favorites.saveAll(selectedList);
+                        selectedList.clear();
                     },
                     backgroundColor: Colors.indigoAccent,
                     shape: RoundedRectangleBorder(
